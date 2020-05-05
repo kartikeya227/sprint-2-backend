@@ -1,0 +1,88 @@
+create table AIRPORT
+(
+    AIRPORT_CODE     VARCHAR2(255 char) not null
+        primary key,
+    AIRPORT_LOCATION VARCHAR2(255 char) not null,
+    AIRPORT_NAME     VARCHAR2(255 char) not null
+)
+/
+
+create table SCHEDULE
+(
+    SCHEDULE_ID    NUMBER(10) not null
+        primary key,
+    COST           NUMBER(10) not null,
+    AIRPORT_CODE_D VARCHAR2(255 char)
+        constraint FKOHR1LR95Q8U7A4OG56L3IXSFY
+            references AIRPORT,
+    AIRPORT_CODE_S VARCHAR2(255 char)
+        constraint FKBDKFT6O4NMN2OQPMKWMFDLNS1
+            references AIRPORT
+)
+/
+
+create table SCHEDULED_FLIGHT
+(
+    SCHEDULE_FLIGHT_ID NUMBER(10) not null
+        primary key,
+    AVAILABLE_SEATS    NUMBER(10) not null,
+    FLIGHT_ID          NUMBER(10)
+        constraint FKMAJL7PMY97MTMUIEBNT1A6AS8
+            references FLIGHT,
+    SCHEDULE_ID        NUMBER(10)
+        constraint FKCKHVHCPKJMMVYA59LI2G8V610
+            references SCHEDULE
+)
+/
+
+create table FLIGHT
+(
+    FLIGHT_ID     NUMBER(10)         not null
+        primary key,
+    CARRIER_NAME  VARCHAR2(255 char) not null,
+    FLIGHT_MODEL  VARCHAR2(255 char) not null,
+    SEAT_CAPACITY NUMBER(10)         not null
+)
+/
+
+create table USERS
+(
+    USER_ID       NUMBER(10)         not null
+        primary key,
+    USER_EMAIL    VARCHAR2(255 char) not null
+        constraint UK_33UO7VET9C79YDFUWG1W848F
+            unique,
+    USER_NAME     VARCHAR2(255 char) not null
+        constraint UK_K8D0F2N7N88W1A16YHUA64ONX
+            unique,
+    USER_PASSWORD VARCHAR2(255 char) not null,
+    USER_PHONE    VARCHAR2(255 char) not null
+        constraint UK_57OQBAQJQYNLU1GUVVC1IHUDY
+            unique,
+    USER_TYPE     VARCHAR2(255 char) not null
+)
+/
+
+create table BOOKING
+(
+    BOOKING_ID          NUMBER(10) not null
+        primary key,
+    COST                NUMBER(10) not null,
+    NO_OF_PASSENGERS    NUMBER(10) not null,
+    SCHEDULED_FLIGHT_FK NUMBER(10)
+        constraint FKF6HCOKF79DUNIYT2T2R8EFCRT
+            references SCHEDULED_FLIGHT,
+    USER_ID_FK          NUMBER(10)
+        constraint FK66WL1KKTP0SETJ3843USEIJVN
+            references USERS
+)
+/
+
+create table BOOKING_PASSENGER_LIST
+(
+    BOOKING_BOOKING_ID        NUMBER(19, 2) not null,
+    PASSENGER_LIST_PNR_NUMBER NUMBER(19, 2) not null
+        constraint UK_7T9CW46PUJ3PTNESUDD59N5II
+            unique
+)
+/

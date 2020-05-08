@@ -63,7 +63,7 @@ public class UserController {
         try{
             if(findById.isPresent()){
                 usersDao.updateUser(users);
-                return new ResponseEntity("User has been successfully updated.",HttpStatus.CREATED);
+                return new ResponseEntity(users ,HttpStatus.CREATED);
             }
             else{
                 throw new RecordNotFoundException("No User record with  user Id "+userId+" found.");
@@ -80,7 +80,7 @@ public class UserController {
         try{
             if(findById.isPresent()){
                 usersDao.deleteUser(userId);
-                return new ResponseEntity("User has been deleted successfully",HttpStatus.OK);
+                return new ResponseEntity(findById,HttpStatus.OK);
             }
             else{
                 throw new RecordNotFoundException("No record with user Id "+userId+" found.");

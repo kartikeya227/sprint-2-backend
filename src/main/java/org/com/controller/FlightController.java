@@ -3,6 +3,7 @@ package org.com.controller;
 import org.com.dao.FlightDao;
 import org.com.error.RecordNotFoundException;
 import org.com.model.airport;
+import org.com.model.booking;
 import org.com.model.flight;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,17 +15,18 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/flight")
+@RequestMapping("/admin")
+@CrossOrigin(origins = "http://localhost:4200")
 public class FlightController {
     @Autowired
     private FlightDao flightDao;
 
-    @GetMapping("/all")
+    @GetMapping("/flights")
     public List<flight> viewAllFlight(){
         return flightDao.viewFlight();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/flights/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<flight> findFlightById(@PathVariable("id") int flightId){
         Optional<flight> findById = flightDao.viewFlight(flightId);
@@ -42,13 +44,18 @@ public class FlightController {
         }
     }
 
-    @PostMapping("/addFlight")
+    @PostMapping("/flights")
     public ResponseEntity<flight> addFlight(@Valid @RequestBody flight flight){
-        flightDao.addFlight(flight);
-        return new ResponseEntity("Flight is created successfully", HttpStatus.CREATED);
+        try{
+            flightDao.addFlight(flight);
+            return new ResponseEntity(flight, HttpStatus.CREATED);
+        }
+        catch (Exception e){
+            return new ResponseEntity(e ,HttpStatus.IM_USED);
+        }
     }
 
-    @PutMapping("/modifyFlight/{id}")
+    @PutMapping("/flights/{id}")
     public ResponseEntity<flight> modifyFlight(@Valid @RequestBody flight flight, @PathVariable("id") int flightNumber){
         Optional<flight> findById= flightDao.viewFlight(flightNumber);
         try{
@@ -65,13 +72,13 @@ public class FlightController {
         }
     }
 
-    @DeleteMapping("/deleteFlight/{id}")
+    @DeleteMapping("/flights/{id}")
     public ResponseEntity<flight> deleteFlight(@PathVariable("id") int flightNumber){
         Optional<flight> findById= flightDao.viewFlight(flightNumber);
         try{
             if(findById.isPresent()){
                 flightDao.deleteFlight(flightNumber);
-                return new ResponseEntity("Flight is deleted successfully",HttpStatus.OK);
+                return new ResponseEntity(findById,HttpStatus.OK);
             }
             else{
                 throw new RecordNotFoundException("No record with flight number "+flightNumber+" found.");

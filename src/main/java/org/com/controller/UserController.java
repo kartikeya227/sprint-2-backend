@@ -29,7 +29,7 @@ public class UserController {
             return new ResponseEntity<users>(user, HttpStatus.CREATED);
         }
         catch (Exception e){
-            return new ResponseEntity("Record already present, make the fields unique " ,HttpStatus.IM_USED);
+            return new ResponseEntity(e ,HttpStatus.IM_USED);
         }
 
     }

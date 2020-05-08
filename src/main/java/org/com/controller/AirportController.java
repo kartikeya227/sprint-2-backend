@@ -6,6 +6,7 @@ import org.com.model.airport;
 import java.util.Optional;
 
 import org.com.model.flight;
+import org.com.model.users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,8 +48,13 @@ public class AirportController {
 
         @PostMapping("/airport")
         public ResponseEntity<airport> addAirport(@Valid @RequestBody airport airport){
-            airportDao.addAirport(airport);
-            return new ResponseEntity("Airport is created successfully", HttpStatus.CREATED);
+            try{
+                airportDao.addAirport(airport);
+                return new ResponseEntity(airport, HttpStatus.CREATED);
+            }
+            catch (Exception e){
+                return new ResponseEntity(e ,HttpStatus.IM_USED);
+            }
         }
 
         @PutMapping("/airport/{id}")
@@ -74,7 +80,7 @@ public class AirportController {
             try{
                 if(findById.isPresent()){
                     airportDao.deleteAirport(airportCode);
-                    return new ResponseEntity("Airport is deleted successfully",HttpStatus.OK);
+                    return new ResponseEntity(findById,HttpStatus.OK);
                 }
                 else{
                     throw new RecordNotFoundException("No record with Airport Code "+airportCode+" found.");

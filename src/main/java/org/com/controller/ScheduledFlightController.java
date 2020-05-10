@@ -1,5 +1,6 @@
 package org.com.controller;
 
+import oracle.sql.DATE;
 import org.com.dao.ScheduledFlightDao;
 import org.com.error.RecordNotFoundException;
 import org.com.model.airport;
@@ -34,10 +35,13 @@ public class ScheduledFlightController {
         return scheduledFlightDao.viewScheduledFlights(flightNumber);
     }
 
-    @GetMapping("/flight/search")
-    public List<scheduledFlight> searchScheduledFightByAirportAndDate(@Valid @RequestBody scheduledFlightSearch scheduledFlightSearch){
-        System.out.println(scheduledFlightSearch.toString());
-        return scheduledFlightDao.viewScheduledFlights(scheduledFlightSearch.getArrivalAirport(),scheduledFlightSearch.getDepartureAirport(),scheduledFlightSearch.getArrivalDate(),scheduledFlightSearch.getDepartureDate());
+    @GetMapping("/flight/{id1}/{id2}/{id3}/{id4}")
+    public List<scheduledFlight> viewAllScheduledFlight
+            (@PathVariable("id1") String sourceAirportCode,
+             @PathVariable("id2") String destinationAirportCode,
+             @PathVariable("id3") Date arrivalDate,
+             @PathVariable("id4") Date departureDate) {
+        return scheduledFlightDao.viewScheduledFlightsByAirportDate(sourceAirportCode,destinationAirportCode, arrivalDate,departureDate);
     }
 
     @PostMapping("/flight")

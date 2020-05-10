@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ScheduledFlightDao {
     public abstract void addScheduleFlight(scheduledFlight scheduledFlight);
-    public abstract List<scheduledFlight> viewScheduledFlights(airport sourceAirport, airport destinationAirport, Date arrivalDate, Date departureDate);
+    public abstract List<scheduledFlight> viewScheduledFlightsByAirportDate(String sourceAirportCode,String destinationAirportCode, Date arrivalDate, Date departureDate);
     public abstract List<scheduledFlight> viewScheduledFlights(int flightNumber);
     public abstract List<scheduledFlight> viewScheduledFlights();
     public abstract void modifyScheduledFlight(scheduledFlight scheduledFlight);

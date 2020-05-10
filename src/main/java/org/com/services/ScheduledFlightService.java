@@ -26,7 +26,7 @@ public class ScheduledFlightService implements ScheduledFlightDao {
     }
 
     @Override
-    public List<scheduledFlight> viewScheduledFlights(airport sourceAirport, airport destinationAirport, Date arrivalDate, Date departureDate) {
+    public List<scheduledFlight> viewScheduledFlightsByAirportDate(String sourceAirportCode, String destinationAirportCode, Date arrivalDate, Date departureDate) {
         List<scheduledFlight> list = new ArrayList<scheduledFlight>();
         list=scheduledFlightRepository.findAll();
         List<scheduledFlight> rlist = new ArrayList<scheduledFlight>();
@@ -35,13 +35,25 @@ public class ScheduledFlightService implements ScheduledFlightDao {
             schedule schedule=scheduledFlight.getSchedule();
             airport airport = schedule.getSourceAirport();
             airport airport_d=scheduledFlight.getSchedule().getDestinationAirport();
-            if((airport.getAirportCode().equals(sourceAirport.getAirportCode()))&&(airport_d.getAirportCode().equals(destinationAirport.getAirportCode())))
+            if((airport.getAirportCode().equals(sourceAirportCode))&&(airport_d.getAirportCode().equals(destinationAirportCode)))
             {
-                if(arrivalDate.toString().equals(schedule.getArrivalDate().toString())){
+                System.out.println(arrivalDate.toString()+" 111 "+schedule.getArrivalDate());
+                if(schedule.getArrivalDate().after(arrivalDate)&&schedule.getArrivalDate().before(departureDate)){
+                    System.out.println(arrivalDate.toString()+" 222 "+schedule.getArrivalDate());
+                    rlist.add(scheduledFlight);
+                }
+                else if(schedule.getArrivalDate().toString().equals(arrivalDate.toString())){
+                    System.out.println(arrivalDate.toString()+" 222 "+schedule.getArrivalDate());
+                    rlist.add(scheduledFlight);
+                }
+                else if(schedule.getArrivalDate().toString().equals(departureDate.toString())){
+                    System.out.println(arrivalDate.toString()+" 222 "+schedule.getArrivalDate());
                     rlist.add(scheduledFlight);
                 }
             }
         }
+        System.out.println("hi/n/n/n/n/n/n/n");
+        
         return rlist;
     }
 

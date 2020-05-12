@@ -22,69 +22,62 @@ public class FlightController {
     private FlightDao flightDao;
 
     @GetMapping("/flights")
-    public List<flight> viewAllFlight(){
+    public List<flight> viewAllFlight() {
         return flightDao.viewFlight();
     }
 
     @GetMapping("/flights/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<flight> findFlightById(@PathVariable("id") int flightId){
+    public ResponseEntity<flight> findFlightById(@PathVariable("id") int flightId) {
         Optional<flight> findById = flightDao.viewFlight(flightId);
         try {
             if (findById.isPresent()) {
                 flight flight = findById.get();
                 return new ResponseEntity<flight>(flight, HttpStatus.OK);
-            }
-            else {
+            } else {
                 throw new RecordNotFoundException("No record found with the provided " + flightId + "Flight Id.");
             }
-        }
-        catch (RecordNotFoundException e) {
-            return new ResponseEntity(e.getMessage(),HttpStatus.NOT_FOUND);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/flights")
-    public ResponseEntity<flight> addFlight(@Valid @RequestBody flight flight){
-        try{
+    public ResponseEntity<flight> addFlight(@Valid @RequestBody flight flight) {
+        try {
             flightDao.addFlight(flight);
             return new ResponseEntity(flight, HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            return new ResponseEntity(e ,HttpStatus.IM_USED);
+        } catch (Exception e) {
+            return new ResponseEntity(e, HttpStatus.IM_USED);
         }
     }
 
     @PutMapping("/flights/{id}")
-    public ResponseEntity<flight> modifyFlight(@Valid @RequestBody flight flight, @PathVariable("id") int flightNumber){
-        Optional<flight> findById= flightDao.viewFlight(flightNumber);
-        try{
-            if(findById.isPresent()){
+    public ResponseEntity<flight> modifyFlight(@Valid @RequestBody flight flight, @PathVariable("id") int flightNumber) {
+        Optional<flight> findById = flightDao.viewFlight(flightNumber);
+        try {
+            if (findById.isPresent()) {
                 flightDao.modifyFlight(flight);
-                return new ResponseEntity<flight>(flight,HttpStatus.OK);
+                return new ResponseEntity<flight>(flight, HttpStatus.OK);
+            } else {
+                throw new RecordNotFoundException("No record with flight number " + flightNumber + " found.");
             }
-            else{
-                throw new RecordNotFoundException("No record with flight number "+flightNumber+" found.");
-            }
-        }
-        catch(RecordNotFoundException e){
-                return new ResponseEntity(e, HttpStatus.NOT_FOUND);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity(e, HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/flights/{id}")
-    public ResponseEntity<flight> deleteFlight(@PathVariable("id") int flightNumber){
-        Optional<flight> findById= flightDao.viewFlight(flightNumber);
-        try{
-            if(findById.isPresent()){
+    public ResponseEntity<flight> deleteFlight(@PathVariable("id") int flightNumber) {
+        Optional<flight> findById = flightDao.viewFlight(flightNumber);
+        try {
+            if (findById.isPresent()) {
                 flightDao.deleteFlight(flightNumber);
-                return new ResponseEntity(findById,HttpStatus.OK);
+                return new ResponseEntity(findById, HttpStatus.OK);
+            } else {
+                throw new RecordNotFoundException("No record with flight number " + flightNumber + " found.");
             }
-            else{
-                throw new RecordNotFoundException("No record with flight number "+flightNumber+" found.");
-            }
-        }
-        catch(RecordNotFoundException e){
+        } catch (RecordNotFoundException e) {
             return new ResponseEntity(e, HttpStatus.NOT_FOUND);
         }
     }

@@ -23,70 +23,63 @@ public class UserController {
     private UsersDao usersDao;
 
     @PostMapping("/user")
-    public ResponseEntity<users> addUser(@Valid @RequestBody users user){
-        try{
+    public ResponseEntity<users> addUser(@Valid @RequestBody users user) {
+        try {
             usersDao.addUser(user);
             return new ResponseEntity<users>(user, HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            return new ResponseEntity(e ,HttpStatus.IM_USED);
+        } catch (Exception e) {
+            return new ResponseEntity(e, HttpStatus.IM_USED);
         }
 
     }
 
     @GetMapping("/user/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<users> findUserById(@PathVariable("id") int userId){
+    public ResponseEntity<users> findUserById(@PathVariable("id") int userId) {
         Optional<users> findById = usersDao.viewUserById(userId);
-        try{
-            if(findById.isPresent()){
-                users user=findById.get();
-                return new ResponseEntity<users>(user,HttpStatus.FOUND);
-            }
-            else{
+        try {
+            if (findById.isPresent()) {
+                users user = findById.get();
+                return new ResponseEntity<users>(user, HttpStatus.FOUND);
+            } else {
                 throw new RecordNotFoundException("No user record found with the provided " + userId + " user Id.");
             }
-        }
-        catch (RecordNotFoundException e){
-            return new ResponseEntity("No user record found with the provided " + userId + " user Id."+e,HttpStatus.NOT_FOUND);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity("No user record found with the provided " + userId + " user Id." + e, HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/user")
-    public List<users> viewAllUser(){
+    public List<users> viewAllUser() {
         return usersDao.viewAllUser();
     }
 
     @PutMapping("/user/{id}")
-    public ResponseEntity<users> modifyUser(@Valid @RequestBody users users, @PathVariable("id") int userId){
-        Optional<users> findById= usersDao.viewUserById(userId);
-        try{
-            if(findById.isPresent()){
+    public ResponseEntity<users> modifyUser(@Valid @RequestBody users users, @PathVariable("id") int userId) {
+        Optional<users> findById = usersDao.viewUserById(userId);
+        try {
+            if (findById.isPresent()) {
                 usersDao.updateUser(users);
-                return new ResponseEntity(users ,HttpStatus.CREATED);
+                return new ResponseEntity(users, HttpStatus.CREATED);
+            } else {
+                throw new RecordNotFoundException("No User record with  user Id " + userId + " found.");
             }
-            else{
-                throw new RecordNotFoundException("No User record with  user Id "+userId+" found.");
-            }
-        }
-        catch(RecordNotFoundException e){
+        } catch (RecordNotFoundException e) {
             return new ResponseEntity(e, HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<users> deleteUser(@PathVariable("id") int userId){
-        Optional<users> findById= usersDao.viewUserById(userId);
-        try{
-            if(findById.isPresent()){
+    public ResponseEntity<users> deleteUser(@PathVariable("id") int userId) {
+        Optional<users> findById = usersDao.viewUserById(userId);
+        try {
+            if (findById.isPresent()) {
                 usersDao.deleteUser(userId);
-                return new ResponseEntity(findById,HttpStatus.OK);
+                return new ResponseEntity(findById, HttpStatus.OK);
+            } else {
+                throw new RecordNotFoundException("No record with user Id " + userId + " found.");
             }
-            else{
-                throw new RecordNotFoundException("No record with user Id "+userId+" found.");
-            }
-        }
-        catch(RecordNotFoundException e){
+        } catch (RecordNotFoundException e) {
             return new ResponseEntity(e, HttpStatus.NOT_FOUND);
         }
     }

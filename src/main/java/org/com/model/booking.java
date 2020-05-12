@@ -20,7 +20,7 @@ public class booking {
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "Passenger_FK")
-    @OrderColumn(name="Seq_FK")
+    @OrderColumn(name = "Seq_FK")
     private List<passenger> passengerList;
 
     @OneToOne

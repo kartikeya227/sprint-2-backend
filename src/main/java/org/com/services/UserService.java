@@ -32,7 +32,6 @@ public class UserService implements UsersDao {
         return userRepository.findAll();
     }
 
-    
 
     @Override
     public void updateUser(users user) {

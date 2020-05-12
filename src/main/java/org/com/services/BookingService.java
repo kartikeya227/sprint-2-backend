@@ -42,8 +42,8 @@ public class BookingService implements BookingDao {
         List<booking> list = new ArrayList<booking>();
         List<booking> rlist = new ArrayList<booking>();
         list = bookingRepository.findAll();
-        for(int i = 0; i<list.size() ; i++){
-            if(list.get(i).getUser().getUserId()==userId){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getUser().getUserId() == userId) {
                 rlist.add(list.get(i));
             }
         }

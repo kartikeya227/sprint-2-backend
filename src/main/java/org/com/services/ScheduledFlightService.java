@@ -28,50 +28,40 @@ public class ScheduledFlightService implements ScheduledFlightDao {
     @Override
     public List<scheduledFlight> viewScheduledFlightsByAirportDate(String sourceAirportCode, String destinationAirportCode, Date arrivalDate, Date departureDate) {
         List<scheduledFlight> list = new ArrayList<scheduledFlight>();
-        list=scheduledFlightRepository.findAll();
+        list = scheduledFlightRepository.findAll();
         List<scheduledFlight> rlist = new ArrayList<scheduledFlight>();
-        for(int i =0; i<list.size();i++){
-            scheduledFlight scheduledFlight=list.get(i);
-            schedule schedule=scheduledFlight.getSchedule();
+        for (int i = 0; i < list.size(); i++) {
+            scheduledFlight scheduledFlight = list.get(i);
+            schedule schedule = scheduledFlight.getSchedule();
             airport airport = schedule.getSourceAirport();
-            airport airport_d=scheduledFlight.getSchedule().getDestinationAirport();
-            if((airport.getAirportCode().equals(sourceAirportCode))&&(airport_d.getAirportCode().equals(destinationAirportCode)))
-            {
-                System.out.println(arrivalDate.toString()+" 111 "+schedule.getArrivalDate());
-                if(schedule.getArrivalDate().after(arrivalDate)&&schedule.getArrivalDate().before(departureDate)){
-                    System.out.println(arrivalDate.toString()+" 222 "+schedule.getArrivalDate());
+            airport airport_d = scheduledFlight.getSchedule().getDestinationAirport();
+            if ((airport.getAirportCode().equals(sourceAirportCode)) && (airport_d.getAirportCode().equals(destinationAirportCode))) {
+                if (schedule.getArrivalDate().after(arrivalDate) && schedule.getArrivalDate().before(departureDate)) {
                     rlist.add(scheduledFlight);
-                }
-                else if(schedule.getArrivalDate().toString().equals(arrivalDate.toString())){
-                    System.out.println(arrivalDate.toString()+" 222 "+schedule.getArrivalDate());
+                } else if (schedule.getArrivalDate().toString().equals(arrivalDate.toString())) {
                     rlist.add(scheduledFlight);
-                }
-                else if(schedule.getArrivalDate().toString().equals(departureDate.toString())){
-                    System.out.println(arrivalDate.toString()+" 222 "+schedule.getArrivalDate());
+                } else if (schedule.getArrivalDate().toString().equals(departureDate.toString())) {
                     rlist.add(scheduledFlight);
                 }
             }
         }
-        System.out.println("hi/n/n/n/n/n/n/n");
-        
         return rlist;
     }
 
     @Override
     public List<scheduledFlight> viewScheduledFlights(int flightNumber) {
         List<scheduledFlight> list = new ArrayList<scheduledFlight>();
-        list=scheduledFlightRepository.findAll();
+        list = scheduledFlightRepository.findAll();
         List<scheduledFlight> rlist = new ArrayList<scheduledFlight>();
-        for(int i =0; i<list.size();i++){
-            scheduledFlight scheduledFlight=list.get(i);
-            flight flight=scheduledFlight.getFlight();
-            if(flight.getFlightNumber()==flightNumber){
+        for (int i = 0; i < list.size(); i++) {
+            scheduledFlight scheduledFlight = list.get(i);
+            flight flight = scheduledFlight.getFlight();
+            if (flight.getFlightNumber() == flightNumber) {
                 rlist.add(scheduledFlight);
             }
         }
         return rlist;
     }
-
 
 
     @Override

@@ -22,75 +22,69 @@ public class BookingController {
     private BookingDao bookingDao;
 
     @GetMapping("/bookings")
-    public List<booking> viewAllBooking(){
+    public List<booking> viewAllBooking() {
         return bookingDao.viewBooking();
     }
 
     @PostMapping("/bookings")
-    public ResponseEntity<booking> addBooking(@Valid @RequestBody booking booking){
-        try{
+    public ResponseEntity<booking> addBooking(@Valid @RequestBody booking booking) {
+        try {
             bookingDao.addBooking(booking);
             return new ResponseEntity<booking>(booking, HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            return new ResponseEntity(e ,HttpStatus.IM_USED);
+        } catch (Exception e) {
+            return new ResponseEntity(e, HttpStatus.IM_USED);
         }
     }
 
     @GetMapping("bookings/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
-    public ResponseEntity<booking> findBookingById(@PathVariable("id") int bookingId){
+    public ResponseEntity<booking> findBookingById(@PathVariable("id") int bookingId) {
         Optional<booking> findById = bookingDao.viewBooking(bookingId);
         try {
             if (findById.isPresent()) {
                 booking booking = findById.get();
                 return new ResponseEntity<booking>(booking, HttpStatus.FOUND);
-            }
-            else {
+            } else {
                 throw new RecordNotFoundException("No Booking record found with the provided " + bookingId + "Booking Id.");
             }
-        }
-        catch (RecordNotFoundException e) {
-            return new ResponseEntity("Booking Id Not found./n"+e.getMessage(),HttpStatus.NOT_FOUND);
+        } catch (RecordNotFoundException e) {
+            return new ResponseEntity("Booking Id Not found./n" + e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/bookings/{id}")
-    public ResponseEntity<booking> modifyFlight(@Valid @RequestBody booking booking, @PathVariable("id") int bookingId){
-        Optional<booking> findById= bookingDao.viewBooking(bookingId);
-        try{
-            if(findById.isPresent()){
+    public ResponseEntity<booking> modifyFlight(@Valid @RequestBody booking booking, @PathVariable("id") int bookingId) {
+        Optional<booking> findById = bookingDao.viewBooking(bookingId);
+        try {
+            if (findById.isPresent()) {
                 bookingDao.modifyBooking(booking);
-                return new ResponseEntity<booking>(booking,HttpStatus.OK);
+                return new ResponseEntity<booking>(booking, HttpStatus.OK);
+            } else {
+                throw new RecordNotFoundException("No booking with booking Id " + bookingId + " found.");
             }
-            else{
-                throw new RecordNotFoundException("No booking with booking Id "+bookingId+" found.");
-            }
-        }
-        catch(RecordNotFoundException e){
+        } catch (RecordNotFoundException e) {
             return new ResponseEntity(e, HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/bookings/{id}")
-    public ResponseEntity<booking> deleteBooking(@PathVariable("id") int bookingId){
-        Optional<booking> findById= bookingDao.viewBooking(bookingId);
-        try{
-            if(findById.isPresent()){
+    public ResponseEntity<booking> deleteBooking(@PathVariable("id") int bookingId) {
+        Optional<booking> findById = bookingDao.viewBooking(bookingId);
+        try {
+            if (findById.isPresent()) {
                 bookingDao.deleteBooking(bookingId);
-                return new ResponseEntity(findById,HttpStatus.OK);
+                return new ResponseEntity(findById, HttpStatus.OK);
+            } else {
+                throw new RecordNotFoundException("No Booking record with booking Id " + bookingId + " found.");
             }
-            else{
-                throw new RecordNotFoundException("No Booking record with booking Id "+bookingId+" found.");
-            }
-        }
-        catch(RecordNotFoundException e){
+        } catch (RecordNotFoundException e) {
             return new ResponseEntity(e, HttpStatus.NOT_FOUND);
         }
     }
+
     @GetMapping("/bookingsByUserId/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
-    public List<booking> findBookingByUserId(@PathVariable("id") int userId){
+    public List<booking> findBookingByUserId(@PathVariable("id") int userId) {
         return bookingDao.viewBookingByUserId(userId);
     }
 

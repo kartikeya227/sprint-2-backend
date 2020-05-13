@@ -1,13 +1,12 @@
 package org.com.controller;
 
-import org.com.dao.AirportDao;
 import org.com.error.RecordNotFoundException;
 import org.com.model.airport;
 
 import java.util.Optional;
 
-import org.com.model.flight;
-import org.com.model.users;
+
+import org.com.services.AirportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +21,17 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:4200")
 public class AirportController {
     @Autowired
-    private AirportDao airportDao;
+    private AirportService airportService;
 
     @GetMapping("/airport")
     public List<airport> viewAllAirport() {
-        return airportDao.viewAirport();
+        return airportService.viewAirport();
     }
 
     @GetMapping("/airport/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<airport> findAirportById(@PathVariable("id") String airportId) {
-        Optional<airport> findById = airportDao.viewAirport(airportId);
+        Optional<airport> findById = airportService.viewAirport(airportId);
         try {
             if (findById.isPresent()) {
                 airport airport = findById.get();
@@ -48,7 +47,7 @@ public class AirportController {
     @PostMapping("/airport")
     public ResponseEntity<airport> addAirport(@Valid @RequestBody airport airport) {
         try {
-            airportDao.addAirport(airport);
+            airportService.addAirport(airport);
             return new ResponseEntity(airport, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity(e, HttpStatus.IM_USED);
@@ -57,10 +56,10 @@ public class AirportController {
 
     @PutMapping("/airport/{id}")
     public ResponseEntity<airport> modifyAirport(@Valid @RequestBody airport airport, @PathVariable("id") String airportCode) {
-        Optional<airport> findById = airportDao.viewAirport(airportCode);
+        Optional<airport> findById = airportService.viewAirport(airportCode);
         try {
             if (findById.isPresent()) {
-                airportDao.updateAirport(airport);
+                airportService.updateAirport(airport);
                 return new ResponseEntity<airport>(airport, HttpStatus.OK);
             } else {
                 throw new RecordNotFoundException("No record with flight number " + airportCode + " found.");
@@ -72,10 +71,10 @@ public class AirportController {
 
     @DeleteMapping("/airport/{id}")
     public ResponseEntity<airport> deleteFlight(@PathVariable("id") String airportCode) {
-        Optional<airport> findById = airportDao.viewAirport(airportCode);
+        Optional<airport> findById = airportService.viewAirport(airportCode);
         try {
             if (findById.isPresent()) {
-                airportDao.deleteAirport(airportCode);
+                airportService.deleteAirport(airportCode);
                 return new ResponseEntity(findById, HttpStatus.OK);
             } else {
                 throw new RecordNotFoundException("No record with Airport Code " + airportCode + " found.");

@@ -1,11 +1,8 @@
 package org.com.controller;
 
-import org.com.dao.AirportDao;
-import org.com.dao.UsersDao;
 import org.com.error.RecordNotFoundException;
-import org.com.model.airport;
-import org.com.model.scheduledFlight;
 import org.com.model.users;
+import org.com.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +17,12 @@ import java.util.Optional;
 public class UserController {
 
     @Autowired
-    private UsersDao usersDao;
+    private UserService userService;
 
     @PostMapping("/user")
     public ResponseEntity<users> addUser(@Valid @RequestBody users user) {
         try {
-            usersDao.addUser(user);
+            userService.addUser(user);
             return new ResponseEntity<users>(user, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity(e, HttpStatus.IM_USED);
@@ -36,7 +33,7 @@ public class UserController {
     @GetMapping("/user/{id}")
     @ExceptionHandler(RecordNotFoundException.class)
     public ResponseEntity<users> findUserById(@PathVariable("id") int userId) {
-        Optional<users> findById = usersDao.viewUserById(userId);
+        Optional<users> findById = userService.viewUserById(userId);
         try {
             if (findById.isPresent()) {
                 users user = findById.get();
@@ -51,15 +48,15 @@ public class UserController {
 
     @GetMapping("/user")
     public List<users> viewAllUser() {
-        return usersDao.viewAllUser();
+        return userService.viewAllUser();
     }
 
     @PutMapping("/user/{id}")
     public ResponseEntity<users> modifyUser(@Valid @RequestBody users users, @PathVariable("id") int userId) {
-        Optional<users> findById = usersDao.viewUserById(userId);
+        Optional<users> findById = userService.viewUserById(userId);
         try {
             if (findById.isPresent()) {
-                usersDao.updateUser(users);
+                userService.updateUser(users);
                 return new ResponseEntity(users, HttpStatus.CREATED);
             } else {
                 throw new RecordNotFoundException("No User record with  user Id " + userId + " found.");
@@ -71,10 +68,10 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     public ResponseEntity<users> deleteUser(@PathVariable("id") int userId) {
-        Optional<users> findById = usersDao.viewUserById(userId);
+        Optional<users> findById = userService.viewUserById(userId);
         try {
             if (findById.isPresent()) {
-                usersDao.deleteUser(userId);
+                userService.deleteUser(userId);
                 return new ResponseEntity(findById, HttpStatus.OK);
             } else {
                 throw new RecordNotFoundException("No record with user Id " + userId + " found.");

@@ -1,12 +1,8 @@
 package org.com.controller;
 
-import oracle.sql.DATE;
-import org.com.dao.ScheduledFlightDao;
 import org.com.error.RecordNotFoundException;
-import org.com.model.airport;
-import org.com.model.flight;
 import org.com.model.scheduledFlight;
-import org.com.model.scheduledFlightSearch;
+import org.com.services.ScheduledFlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +19,16 @@ import java.util.Optional;
 
 public class ScheduledFlightController {
     @Autowired
-    private ScheduledFlightDao scheduledFlightDao;
+    private ScheduledFlightService scheduledFlightService;
 
     @GetMapping("/flight")
     public List<scheduledFlight> viewAllScheduledFlight() {
-        return scheduledFlightDao.viewScheduledFlights();
+        return scheduledFlightService.viewScheduledFlights();
     }
 
     @GetMapping("/flight/{id}")
     public List<scheduledFlight> viewAllScheduledFlight(@PathVariable("id") int flightNumber) {
-        return scheduledFlightDao.viewScheduledFlights(flightNumber);
+        return scheduledFlightService.viewScheduledFlights(flightNumber);
     }
 
     @GetMapping("/flight/{id1}/{id2}/{id3}/{id4}")
@@ -41,13 +37,13 @@ public class ScheduledFlightController {
              @PathVariable("id2") String destinationAirportCode,
              @PathVariable("id3") Date arrivalDate,
              @PathVariable("id4") Date departureDate) {
-        return scheduledFlightDao.viewScheduledFlightsByAirportDate(sourceAirportCode, destinationAirportCode, arrivalDate, departureDate);
+        return scheduledFlightService.viewScheduledFlightsByAirportDate(sourceAirportCode, destinationAirportCode, arrivalDate, departureDate);
     }
 
     @PostMapping("/flight")
     public ResponseEntity<scheduledFlight> addScheduledFlight(@Valid @RequestBody scheduledFlight scheduledFlight) {
         try {
-            scheduledFlightDao.addScheduleFlight(scheduledFlight);
+            scheduledFlightService.addScheduleFlight(scheduledFlight);
             return new ResponseEntity<scheduledFlight>(scheduledFlight, HttpStatus.CREATED);
         } catch (RecordNotFoundException e) {
             return new ResponseEntity(e, HttpStatus.NOT_FOUND);
@@ -57,10 +53,10 @@ public class ScheduledFlightController {
 
     @DeleteMapping("/flight/{id}")
     public ResponseEntity<scheduledFlight> deleteScheduledFlight(@PathVariable("id") int scheduleFlightId) {
-        Optional<scheduledFlight> findById = scheduledFlightDao.scheduledFlightExists(scheduleFlightId);
+        Optional<scheduledFlight> findById = scheduledFlightService.scheduledFlightExists(scheduleFlightId);
         try {
             if (findById.isPresent()) {
-                scheduledFlightDao.deleteScheduledFlight(scheduleFlightId);
+                scheduledFlightService.deleteScheduledFlight(scheduleFlightId);
                 return new ResponseEntity(findById, HttpStatus.OK);
             } else {
                 throw new RecordNotFoundException("No record with scheduled flight Id " + scheduleFlightId + " found.");
@@ -72,10 +68,10 @@ public class ScheduledFlightController {
 
     @PutMapping("/flight/{id}")
     public ResponseEntity<scheduledFlight> modifyScheduledFlight(@Valid @RequestBody scheduledFlight scheduledFlight, @PathVariable("id") int scheduleFlightId) {
-        Optional<scheduledFlight> findById = scheduledFlightDao.scheduledFlightExists(scheduleFlightId);
+        Optional<scheduledFlight> findById = scheduledFlightService.scheduledFlightExists(scheduleFlightId);
         try {
             if (findById.isPresent()) {
-                scheduledFlightDao.modifyScheduledFlight(scheduledFlight);
+                scheduledFlightService.modifyScheduledFlight(scheduledFlight);
                 return new ResponseEntity(scheduledFlight, HttpStatus.OK);
             } else {
                 throw new RecordNotFoundException("No record with scheduled flight Id " + scheduleFlightId + " found.");
